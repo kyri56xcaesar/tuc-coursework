@@ -2,9 +2,9 @@
 -- Company: 
 -- Engineer: 
 -- 
--- Create Date:    15:50:26 03/08/2023 
+-- Create Date:    15:14:02 03/09/2023 
 -- Design Name: 
--- Module Name:    Register - Behavioral 
+-- Module Name:    PC - Behavioral 
 -- Project Name: 
 -- Target Devices: 
 -- Tool versions: 
@@ -29,31 +29,40 @@ use IEEE.STD_LOGIC_1164.ALL;
 --library UNISIM;
 --use UNISIM.VComponents.all;
 
-entity Reg is
-    Port ( CLK : in  STD_LOGIC;
-           DATA : in  STD_LOGIC_VECTOR (31 downto 0);
-           Dout : out  STD_LOGIC_VECTOR (31 downto 0);
-           WE : in  STD_LOGIC);
-end Reg;
+entity PC is
+    Port ( PC_in : in  STD_LOGIC_VECTOR (31 downto 0);
+           PC_LdEn : in  STD_LOGIC;
+           Clk : in  STD_LOGIC;
+           Reset : in  STD_LOGIC;
+           PC_out : out  STD_LOGIC_VECTOR (31 downto 0));
+end PC;
 
-architecture Behavioral of Reg is
-
-signal temp : STD_LOGIC_VECTOR (31 downto 0);
+architecture Behavioral of PC is
+	
+signal temp : std_logic_vector(31 downto 0);
 
 begin
 
 process 
 
 begin
-	wait until (CLK'EVENT and CLK='1');
-	
-	if WE = '1' then 
-		temp <= DATA;
-	end if;
 
+	wait until (Clk'EVENT and Clk = '1');
+	
+		if Reset = '1' then
+			PC_out <= "00000000000000000000000000000000";
+		else
+			if(PC_LdEn = '1') then
+				temp <= PC_in;
+			elsif (PC_LdEn = '0') then
+				temp <= PC_out;
+			end if;
+			
+		end if;
+	
 end process;
 
-	Dout <= temp;
+PC_out <= temp;
 
 end Behavioral;
 

@@ -112,9 +112,144 @@ port( Ard   : in std_logic_vector(4 downto 0);
 end component;
 
 --signals--
+signal sign_din,sign_decOut,sign_we,sign_MUX1,sign_MUX2 : STD_LOGIC_VECTOR(31 downto 0);
 
+type ar2d is array (0 to 31) of std_logic_vector(31 downto 0);
+signal sign_Reg: ar2d;--2 dim 32x32 array
+
+signal comp1,comp2 :STD_LOGIC;
 
 begin
 
+
+
+for1:for i in 0 to 31 generate
+
+	sign_we(i) <= WrEn and sign_decOut(i);
+
+end generate;
+
+DEC1: DEC5to32
+  Port map (  Awr=> Awr,
+              Dout=>sign_decOut
+				  );
+
+Reg0: Reg
+  Port map ( DATA=>"00000000000000000000000000000000",
+             CLK=>CLK,
+				 WE=>sign_we(0),
+				 Dout=>sign_Reg(0)
+				 );
+--GENERATE 1-31 Regs----
+for2:for i in 1 to 31 generate
+ 
+ RegX: Reg
+   Port map ( DATA=>Din,
+              CLK=>CLK,
+              WE=>sign_we(i),
+              Dout=>sign_Reg(i)
+             );	
+end generate;	
+
+MUX1: MUX32to1
+   Port map ( sel=>Ard1,
+              R0 =>sign_Reg(0),----*
+              R1 =>sign_Reg(1),
+              R2 =>sign_Reg(2),	
+              R3 =>sign_Reg(3),
+              R4 =>sign_Reg(4),
+              R5 =>sign_Reg(5),
+              R6 =>sign_Reg(6),
+              R7 =>sign_Reg(7),
+              R8 =>sign_Reg(8),
+				  R9 =>sign_Reg(9),
+              R10 =>sign_Reg(10),
+              R11 =>sign_Reg(11),
+              R12 =>sign_Reg(12),
+              R13 =>sign_Reg(13),
+              R14 =>sign_Reg(14),
+              R15 =>sign_Reg(15),
+              R16 =>sign_Reg(16),
+              R17 =>sign_Reg(17),
+              R18 =>sign_Reg(18),
+              R19 =>sign_Reg(19),
+              R20 =>sign_Reg(20),
+              R21 =>sign_Reg(21),
+              R22 =>sign_Reg(22),
+				  R23 =>sign_Reg(23),
+              R24 =>sign_Reg(24),
+              R25 =>sign_Reg(25),
+              R26 =>sign_Reg(26),
+              R27 =>sign_Reg(27),
+              R28 =>sign_Reg(28),
+              R29 =>sign_Reg(29),
+              R30 =>sign_Reg(30),
+              R31 =>sign_Reg(31),
+              
+              Mout=>sign_MUX1
+            );
+
+MUX2: MUX32to1
+   Port map ( sel=>Ard2,
+              R0 =>sign_Reg(0),----*
+              R1 =>sign_Reg(1),
+              R2 =>sign_Reg(2),	
+              R3 =>sign_Reg(3),
+              R4 =>sign_Reg(4),
+              R5 =>sign_Reg(5),
+              R6 =>sign_Reg(6),
+              R7 =>sign_Reg(7),
+              R8 =>sign_Reg(8),
+				  R9 =>sign_Reg(9),
+              R10 =>sign_Reg(10),
+              R11 =>sign_Reg(11),
+              R12 =>sign_Reg(12),
+              R13 =>sign_Reg(13),
+              R14 =>sign_Reg(14),
+              R15 =>sign_Reg(15),
+              R16 =>sign_Reg(16),
+              R17 =>sign_Reg(17),
+              R18 =>sign_Reg(18),
+              R19 =>sign_Reg(19),
+              R20 =>sign_Reg(20),
+              R21 =>sign_Reg(21),
+              R22 =>sign_Reg(22),
+				  R23 =>sign_Reg(23),
+              R24 =>sign_Reg(24),
+              R25 =>sign_Reg(25),
+              R26 =>sign_Reg(26),
+              R27 =>sign_Reg(27),
+              R28 =>sign_Reg(28),
+              R29 =>sign_Reg(29),
+              R30 =>sign_Reg(30),
+              R31 =>sign_Reg(31),
+              
+              Mout=>sign_MUX2
+            );				
+
+C1: CompareModule
+     Port map ( Ard=>Ard1,
+                Awr=>Awr,
+                CMout=>comp1
+               );
+
+C2: CompareModule
+     Port map ( Ard=>Ard2,
+                Awr=>Awr,
+                CMout=>comp2
+               );
+
+MUX3: MUX2to1
+   Port map ( sel=>comp1,
+	           Din=>Din,
+				  Dreg=>sign_MUX1,
+				  Dout=>Dout1
+				 );
+MUX4: MUX2to1
+   Port map ( sel=>comp2,
+	           Din=>Din,
+				  Dreg=>sign_MUX2,
+				  Dout=>Dout2
+				 );
 
 end Structural;

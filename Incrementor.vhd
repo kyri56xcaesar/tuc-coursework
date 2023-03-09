@@ -2,9 +2,9 @@
 -- Company: 
 -- Engineer: 
 -- 
--- Create Date:    15:50:26 03/08/2023 
+-- Create Date:    14:34:53 03/09/2023 
 -- Design Name: 
--- Module Name:    Register - Behavioral 
+-- Module Name:    Incrementor - Behavioral 
 -- Project Name: 
 -- Target Devices: 
 -- Tool versions: 
@@ -29,31 +29,18 @@ use IEEE.STD_LOGIC_1164.ALL;
 --library UNISIM;
 --use UNISIM.VComponents.all;
 
-entity Reg is
-    Port ( CLK : in  STD_LOGIC;
-           DATA : in  STD_LOGIC_VECTOR (31 downto 0);
-           Dout : out  STD_LOGIC_VECTOR (31 downto 0);
-           WE : in  STD_LOGIC);
-end Reg;
+entity Incrementor is
 
-architecture Behavioral of Reg is
+port( input  : std_logic_vector(31 downto 0);
+		output : std_logic_vector(31 downto 0)); 
 
-signal temp : STD_LOGIC_VECTOR (31 downto 0);
+end Incrementor;
+
+architecture Behavioral of Incrementor is
 
 begin
 
-process 
-
-begin
-	wait until (CLK'EVENT and CLK='1');
-	
-	if WE = '1' then 
-		temp <= DATA;
-	end if;
-
-end process;
-
-	Dout <= temp;
+	output <= (input + "00000000000000000000000000000100");
 
 end Behavioral;
 

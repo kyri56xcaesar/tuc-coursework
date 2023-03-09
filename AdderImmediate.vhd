@@ -2,9 +2,9 @@
 -- Company: 
 -- Engineer: 
 -- 
--- Create Date:    15:50:26 03/08/2023 
+-- Create Date:    14:45:03 03/09/2023 
 -- Design Name: 
--- Module Name:    Register - Behavioral 
+-- Module Name:    AdderImmediate - Behavioral 
 -- Project Name: 
 -- Target Devices: 
 -- Tool versions: 
@@ -29,31 +29,24 @@ use IEEE.STD_LOGIC_1164.ALL;
 --library UNISIM;
 --use UNISIM.VComponents.all;
 
-entity Reg is
-    Port ( CLK : in  STD_LOGIC;
-           DATA : in  STD_LOGIC_VECTOR (31 downto 0);
-           Dout : out  STD_LOGIC_VECTOR (31 downto 0);
-           WE : in  STD_LOGIC);
-end Reg;
+entity AdderImmediate is
 
-architecture Behavioral of Reg is
-
-signal temp : STD_LOGIC_VECTOR (31 downto 0);
-
-begin
-
-process 
-
-begin
-	wait until (CLK'EVENT and CLK='1');
+port( Incin 	  : in std_logic_vector(31 downto 0);
+		IMMEDin    : in std_logic_vector(31 downto 0);
+		ADDout     : out std_logic_vector(31 downto 0));
 	
-	if WE = '1' then 
-		temp <= DATA;
-	end if;
+end AdderImmediate;
 
-end process;
+architecture Behavioral of AdderImmediate is
 
-	Dout <= temp;
+signal result : std_logic_vector(31 downto 0);
+
+begin
+
+result <= (Incin + IMMEDin);
+
+
+ADDout <= result ;
 
 end Behavioral;
 

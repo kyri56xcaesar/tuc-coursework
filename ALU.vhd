@@ -51,16 +51,16 @@ signal dummyB : STD_LOGIC_VECTOR (31 downto 0);
 
 begin
 
-result <= (A + B) when Op="0000" else
-			 (A - B) when Op="0001" else
-		(A and B)   when Op="0010" else
-		(A or B)		when Op="0011" else
-		(not A)     when Op="0100" else
-		(A(31) & A(31 downto 1)) when Op="1000" else
-		('0' & A(31 downto 1))   when Op="1001" else
-		(A(30 downto 0) & '0')   when Op="1010" else
-		(A(30 downto 0) & A(31)) when Op="1100" else
-		(A(0) & A(31 downto 1))  when Op="1101" else
+result <= (A + B)                  when Op="0000" else
+			 (A - B)                  when Op="0001" else
+		    (A and B)                when Op="0010" else
+		    (A or B)		           when Op="0011" else
+		    (not A)                  when Op="0100" else
+		    (A(31) & A(31 downto 1)) when Op="1000" else
+		    ('0' & A(31 downto 1))   when Op="1001" else
+		    (A(30 downto 0) & '0')   when Op="1010" else
+		    (A(30 downto 0) & A(31)) when Op="1100" else
+		    (A(0) & A(31 downto 1))  when Op="1101" else
 		result;
 		
 AluOut <= result;

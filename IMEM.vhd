@@ -2,9 +2,9 @@
 -- Company: 
 -- Engineer: 
 -- 
--- Create Date:    15:50:26 03/08/2023 
+-- Create Date:    13:44:32 03/09/2023 
 -- Design Name: 
--- Module Name:    Register - Behavioral 
+-- Module Name:    IMEM - Behavioral 
 -- Project Name: 
 -- Target Devices: 
 -- Tool versions: 
@@ -29,31 +29,13 @@ use IEEE.STD_LOGIC_1164.ALL;
 --library UNISIM;
 --use UNISIM.VComponents.all;
 
-entity Reg is
-    Port ( CLK : in  STD_LOGIC;
-           DATA : in  STD_LOGIC_VECTOR (31 downto 0);
-           Dout : out  STD_LOGIC_VECTOR (31 downto 0);
-           WE : in  STD_LOGIC);
-end Reg;
+entity IMEM is
+end IMEM;
 
-architecture Behavioral of Reg is
-
-signal temp : STD_LOGIC_VECTOR (31 downto 0);
+architecture Behavioral of IMEM is
 
 begin
 
-process 
-
-begin
-	wait until (CLK'EVENT and CLK='1');
-	
-	if WE = '1' then 
-		temp <= DATA;
-	end if;
-
-end process;
-
-	Dout <= temp;
 
 end Behavioral;
 

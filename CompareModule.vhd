@@ -42,6 +42,6 @@ architecture Behavioral of CompareModule is
 
 begin
 
-CMout<= '1' when (Adr=Awr) else '0';
+CMout<= '1' when (Ard=Awr) else '0';
 
 end Behavioral;
