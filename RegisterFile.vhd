@@ -121,11 +121,11 @@ signal comp1,comp2 :STD_LOGIC;
 
 begin
 
+--sign_we(0) <= (WrEn and '0');
 
+for1:for i in 1 to 31 generate
 
-for1:for i in 0 to 31 generate
-
-	sign_we(i) <= WrEn and sign_decOut(i);
+	sign_we(i) <= (WrEn and sign_decOut(i));
 
 end generate;
 
@@ -137,10 +137,10 @@ DEC1: DEC5to32
 Reg0: Reg
   Port map ( DATA=>"00000000000000000000000000000000",
              CLK=>CLK,
-				 WE=>sign_we(0),
+				 WE=>'0',
 				 Dout=>sign_Reg(0)
 				 );
---GENERATE 1-31 Regs----
+--GENERATE 1-31 Registers----
 for2:for i in 1 to 31 generate
  
  RegX: Reg
@@ -153,7 +153,7 @@ end generate;
 
 MUX1: MUX32to1
    Port map ( sel=>Ard1,
-              R0 =>sign_Reg(0),----*
+              R0 =>sign_Reg(0),
               R1 =>sign_Reg(1),
               R2 =>sign_Reg(2),	
               R3 =>sign_Reg(3),
@@ -191,7 +191,7 @@ MUX1: MUX32to1
 
 MUX2: MUX32to1
    Port map ( sel=>Ard2,
-              R0 =>sign_Reg(0),----*
+              R0 =>sign_Reg(0),
               R1 =>sign_Reg(1),
               R2 =>sign_Reg(2),	
               R3 =>sign_Reg(3),

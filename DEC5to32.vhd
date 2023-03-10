@@ -41,7 +41,7 @@ signal tmp : STD_LOGIC_VECTOR(31 downto 0);
 
 begin
 
-   tmp <= "00000000000000000000000000000000" when Awr="00000" else --Lsb=0 instead of '1'(in 32bit number)--R0
+   tmp <= "00000000000000000000000000000001" when Awr="00000" else --Lsb=0 instead of '1'(in 32bit number)--R0
           "00000000000000000000000000000010" when Awr="00001" else --R1
 			 "00000000000000000000000000000100" when Awr="00010" else --R2
 			 "00000000000000000000000000001000" when Awr="00011" else --R3
