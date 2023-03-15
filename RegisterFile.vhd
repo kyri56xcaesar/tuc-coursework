@@ -37,7 +37,8 @@ entity RegisterFile is
            WrEn  : in   STD_LOGIC;
            Clk   : in   STD_LOGIC;
            Dout1 : out  STD_LOGIC_VECTOR (31 downto 0);
-           Dout2 : out  STD_LOGIC_VECTOR (31 downto 0));
+           Dout2 : out  STD_LOGIC_VECTOR (31 downto 0);
+			  Reset : in   STD_LOGIC);
 end RegisterFile;
 
 architecture Structural of RegisterFile is
@@ -53,6 +54,7 @@ component Reg is
 Port ( CLK : in  STD_LOGIC;
        DATA : in  STD_LOGIC_VECTOR (31 downto 0);
        Dout : out  STD_LOGIC_VECTOR (31 downto 0);
+		 Reset : in STD_LOGIC;
        WE : in  STD_LOGIC);
 		 
 end component;
@@ -137,8 +139,9 @@ DEC1: DEC5to32
 Reg0: Reg
   Port map ( DATA=>"00000000000000000000000000000000",
              CLK=>CLK,
-				 WE=>'0',
-				 Dout=>sign_Reg(0)
+				 WE=>'1',
+				 Dout=>sign_Reg(0),
+				 Reset => Reset
 				 );
 --GENERATE 1-31 Registers----
 for2:for i in 1 to 31 generate
@@ -147,7 +150,8 @@ for2:for i in 1 to 31 generate
    Port map ( DATA=>Din,
               CLK=>CLK,
               WE=>sign_we(i),
-              Dout=>sign_Reg(i)
+              Dout=>sign_Reg(i),
+				  Reset => Reset
              );	
 end generate;	
 

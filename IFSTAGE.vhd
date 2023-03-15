@@ -2,9 +2,9 @@
 -- Company: 
 -- Engineer: 
 -- 
--- Create Date:    14:53:18 03/09/2023 
+-- Create Date:    17:43:56 03/15/2023 
 -- Design Name: 
--- Module Name:    InstReq - Behavioral 
+-- Module Name:    IFSTAGE - Behavioral 
 -- Project Name: 
 -- Target Devices: 
 -- Tool versions: 
@@ -29,16 +29,16 @@ use IEEE.STD_LOGIC_1164.ALL;
 --library UNISIM;
 --use UNISIM.VComponents.all;
 
-entity InstReq is
+entity IFSTAGE is
     Port ( PC_Immed : in  STD_LOGIC_VECTOR (31 downto 0);
            PC_sel   : in  STD_LOGIC;
            PC_LdEn  : in  STD_LOGIC;
            Clk      : in  STD_LOGIC;
            Reset    : in  STD_LOGIC;
            Instr    : out  STD_LOGIC_VECTOR (31 downto 0));
-end InstReq;
+end IFSTAGE;
 
-architecture Behavioral of InstReq is
+architecture Behavioral of IFSTAGE is
 
 signal mux_out , add_out , inc_out , pc_out : std_logic_vector(31 downto 0);
 
@@ -111,4 +111,3 @@ port map( ADDRA => pc_out(12 downto 2),
 		DOUTA => Instr);
 
 end Behavioral;
-

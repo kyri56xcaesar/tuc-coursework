@@ -48,6 +48,8 @@ architecture Behavioral of ALU is
 signal result : STD_LOGIC_VECTOR (31 downto 0);
 signal sameSign : STD_LOGIC;
 signal dummyB : STD_LOGIC_VECTOR (31 downto 0);
+signal tempOvf : STD_LOGIC;
+signal tempCout : STD_LOGIC;
 
 begin
 
@@ -75,9 +77,20 @@ Zero <= '1' when result = x"0000_0000" else
 		 
 sameSign <= (A(31) xor dummyB(31));--check if the 2 inputs uniforms
 
-Ovf <= (A(31) xor result(31)) when sameSign ='0' else
+tempOvf <= (A(31) xor result(31)) when sameSign ='0' else
 		  '0';
 
-Cout <= (A(31)) when sameSign = '0' else (not result(31));
+tempCout <= (A(31)) when sameSign = '0' else (not result(31));
+
+
+Ovf <= tempOvf when (Op="0000") else
+		 tempOvf when (Op="0001") else
+		 '0';
+
+Cout <= tempCout when (Op="0000") else
+		  tempCout when (Op="0001") else
+		  '0';
+
+
 
 end Behavioral;

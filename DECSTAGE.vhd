@@ -34,8 +34,13 @@ entity DECSTAGE is
            ALU_out : in  STD_LOGIC_VECTOR (31 downto 0);
            MEM_out : in  STD_LOGIC_VECTOR (31 downto 0);
            RF_WrData_sel : in  STD_LOGIC;
+			  RF_WrEn       : in STD_LOGIC;
+			  RF_B_sel : in STD_LOGIC;
+			  Clk :in STD_LOGIC;
            RF_A : out  STD_LOGIC_VECTOR (31 downto 0);
-           RF_B : out  STD_LOGIC_VECTOR (31 downto 0));
+           RF_B : out  STD_LOGIC_VECTOR (31 downto 0);
+			  Immed : out  STD_LOGIC_VECTOR (31 downto 0)
+			  );
 end DECSTAGE;
 
 architecture Behavioral of DECSTAGE is
@@ -67,6 +72,13 @@ component RegisterFile is
 end component;
 
 --component cloud
+component DECcloud is 
+Port ( Instr  : in  STD_LOGIC_VECTOR (15 downto 0);
+       Immed : out  STD_LOGIC_VECTOR (31 downto 0);
+		 OPcode : in STD_LOGIC_VECTOR (5 downto 0)
+		);
+		
+end component;
 
 begin
 
@@ -74,9 +86,30 @@ MUX1 : MUX2to1
 port map(  sel  => RF_WrData_sel,
            Din  => ALU_out,
            Dreg => MEM_out,
+           Dout => mux_out1);
+
+
+MUX2 : MUX2to1
+port map(  sel  => RF_B_sel,
+           Din  => Instr(15 downto 11),
+           Dreg => Instr(20 downto 16),
            Dout => mux_out2);
 
+RF : RegisterFile
+port map(  Ard1  => Instr(25 downto 21),
+           Ard2  => mux_out2,
+           Awr   => Instr(20 downto 16),
+           Din   => mux_out1,
+           WrEn  => RF_WrEn,
+           Clk   => Clk,
+           Dout1 => RF_A,
+           Dout2 => RF_B);
 
 
+Cloud : DECcloud
+port map( Instr  => Instr(15 downto 0),
+          Immed  => Immed,
+		    OPcode => Instr(31 downto 26)
+			);
 
 end Behavioral;

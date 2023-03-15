@@ -48,8 +48,9 @@ ARCHITECTURE behavior OF RegisterFile_tb IS
          WrEn : IN  std_logic;
          Clk : IN  std_logic;
          Dout1 : OUT  std_logic_vector(31 downto 0);
-         Dout2 : OUT  std_logic_vector(31 downto 0)
-        );
+         Dout2 : OUT  std_logic_vector(31 downto 0);
+			Reset : in   STD_LOGIC);
+
     END COMPONENT;
     
 
@@ -60,6 +61,7 @@ ARCHITECTURE behavior OF RegisterFile_tb IS
    signal Din : std_logic_vector(31 downto 0) := (others => '0');
    signal WrEn : std_logic := '0';
    signal Clk : std_logic := '0';
+	signal Reset : std_logic := '1';
 
  	--Outputs
    signal Dout1 : std_logic_vector(31 downto 0);
@@ -79,7 +81,8 @@ BEGIN
           WrEn => WrEn,
           Clk => Clk,
           Dout1 => Dout1,
-          Dout2 => Dout2
+          Dout2 => Dout2,
+			 Reset => Reset
         );
 
    -- Clock process definitions
@@ -103,6 +106,7 @@ BEGIN
 		Awr  <= "00000";
 		Din  <= "11111111110001010101100000000111";
 		WrEn <= '1';
+		Reset <='0';
       wait for Clk_period*2;
 		
 		--now it should write to the register(1)
@@ -111,6 +115,7 @@ BEGIN
 		Awr  <= "00001";
 		Din  <= "00000011110001010101100000000000";
 		WrEn <= '1';
+
       wait for Clk_period*2;
 		
 		
