@@ -26,8 +26,8 @@
 --    All rights reserved.                                                    --
 --------------------------------------------------------------------------------
 --------------------------------------------------------------------------------
--- You must compile the wrapper file IMEM.vhd when simulating
--- the core, IMEM. When compiling the wrapper file, be sure to
+-- You must compile the wrapper file RAM1024.vhd when simulating
+-- the core, RAM1024. When compiling the wrapper file, be sure to
 -- reference the XilinxCoreLib VHDL simulation library. For detailed
 -- instructions, please refer to the "CORE Generator Help".
 
@@ -40,39 +40,43 @@ USE ieee.std_logic_1164.ALL;
 -- synthesis translate_off
 LIBRARY XilinxCoreLib;
 -- synthesis translate_on
-ENTITY IMEM IS
+ENTITY RAM1024 IS
   PORT (
     clka : IN STD_LOGIC;
-    addra : IN STD_LOGIC_VECTOR(9 DOWNTO 0);
+    wea : IN STD_LOGIC_VECTOR(3 DOWNTO 0);
+    addra : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
+    dina : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
     douta : OUT STD_LOGIC_VECTOR(31 DOWNTO 0)
   );
-END IMEM;
+END RAM1024;
 
-ARCHITECTURE IMEM_a OF IMEM IS
+ARCHITECTURE RAM1024_a OF RAM1024 IS
 -- synthesis translate_off
-COMPONENT wrapped_IMEM
+COMPONENT wrapped_RAM1024
   PORT (
     clka : IN STD_LOGIC;
-    addra : IN STD_LOGIC_VECTOR(9 DOWNTO 0);
+    wea : IN STD_LOGIC_VECTOR(3 DOWNTO 0);
+    addra : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
+    dina : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
     douta : OUT STD_LOGIC_VECTOR(31 DOWNTO 0)
   );
 END COMPONENT;
 
 -- Configuration specification
-  FOR ALL : wrapped_IMEM USE ENTITY XilinxCoreLib.blk_mem_gen_v7_3(behavioral)
+  FOR ALL : wrapped_RAM1024 USE ENTITY XilinxCoreLib.blk_mem_gen_v7_3(behavioral)
     GENERIC MAP (
-      c_addra_width => 10,
-      c_addrb_width => 10,
+      c_addra_width => 32,
+      c_addrb_width => 32,
       c_algorithm => 1,
       c_axi_id_width => 4,
       c_axi_slave_type => 0,
       c_axi_type => 1,
-      c_byte_size => 9,
+      c_byte_size => 8,
       c_common_clk => 0,
       c_default_data => "0",
       c_disable_warn_bhv_coll => 0,
       c_disable_warn_bhv_range => 0,
-      c_enable_32bit_address => 0,
+      c_enable_32bit_address => 1,
       c_family => "artix7",
       c_has_axi_id => 0,
       c_has_ena => 0,
@@ -94,7 +98,7 @@ END COMPONENT;
       c_initb_val => "0",
       c_interface_type => 0,
       c_load_init_file => 0,
-      c_mem_type => 3,
+      c_mem_type => 0,
       c_mux_pipeline_stages => 0,
       c_prim_type => 1,
       c_read_depth_a => 1024,
@@ -108,16 +112,16 @@ END COMPONENT;
       c_rstram_b => 0,
       c_sim_collision_check => "ALL",
       c_use_bram_block => 0,
-      c_use_byte_wea => 0,
-      c_use_byte_web => 0,
+      c_use_byte_wea => 1,
+      c_use_byte_web => 1,
       c_use_default_data => 0,
       c_use_ecc => 0,
       c_use_softecc => 0,
-      c_wea_width => 1,
-      c_web_width => 1,
+      c_wea_width => 4,
+      c_web_width => 4,
       c_write_depth_a => 1024,
       c_write_depth_b => 1024,
-      c_write_mode_a => "WRITE_FIRST",
+      c_write_mode_a => "READ_FIRST",
       c_write_mode_b => "WRITE_FIRST",
       c_write_width_a => 32,
       c_write_width_b => 32,
@@ -126,12 +130,14 @@ END COMPONENT;
 -- synthesis translate_on
 BEGIN
 -- synthesis translate_off
-U0 : wrapped_IMEM
+U0 : wrapped_RAM1024
   PORT MAP (
     clka => clka,
+    wea => wea,
     addra => addra,
+    dina => dina,
     douta => douta
   );
 -- synthesis translate_on
 
-END IMEM_a;
+END RAM1024_a;
