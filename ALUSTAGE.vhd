@@ -35,7 +35,10 @@ entity ALUSTAGE is
            Immed : in  STD_LOGIC_VECTOR (31 downto 0);
            ALU_Bin_sel : in  STD_LOGIC;
            ALU_func : in  STD_LOGIC_VECTOR (3 downto 0);
-           ALU_out : out  STD_LOGIC_VECTOR (31 downto 0));
+           ALU_out : out  STD_LOGIC_VECTOR (31 downto 0);
+			  Zero : out  STD_LOGIC;
+           Cout : out  STD_LOGIC;
+           Ovf : out  STD_LOGIC);
 end ALUSTAGE;
 
 architecture Behavioral of ALUSTAGE is
@@ -76,9 +79,9 @@ port map ( A  => RF_A,
            B  => mux_out,
            Op => ALU_func,
            AluOut => ALU_out,
-           Zero => '0',
-           Cout => '0',
-           Ovf => '0');
+           Zero => Zero,
+           Cout => Cout,
+           Ovf => Ovf);
 
 
 end Behavioral;

@@ -40,12 +40,11 @@ ARCHITECTURE behavior OF REG_tb IS
     -- Component Declaration for the Unit Under Test (UUT)
  
     COMPONENT Reg
-    PORT(
-         CLK : IN  std_logic;
-         DATA : IN  std_logic_vector(31 downto 0);
-         Dout : OUT  std_logic_vector(31 downto 0);
-         WE : IN  std_logic
-        );
+    Port ( CLK   : in  STD_LOGIC;
+           DATA  : in  STD_LOGIC_VECTOR (31 downto 0);
+           Dout  : out  STD_LOGIC_VECTOR (31 downto 0);
+			  Reset : in STD_LOGIC;
+           WE    : in  STD_LOGIC);
     END COMPONENT;
     
 
@@ -53,6 +52,7 @@ ARCHITECTURE behavior OF REG_tb IS
    signal CLK : std_logic := '0';
    signal DATA : std_logic_vector(31 downto 0) := (others => '0');
    signal WE : std_logic := '0';
+	signal Reset : std_logic := '0';
 
  	--Outputs
    signal Dout : std_logic_vector(31 downto 0);
@@ -67,7 +67,8 @@ BEGIN
           CLK => CLK,
           DATA => DATA,
           Dout => Dout,
-          WE => WE
+          WE => WE,
+			 Reset => Reset
         );
 
    -- Clock process definitions
@@ -84,13 +85,14 @@ BEGIN
    stim_proc: process
    begin		
       -- hold reset state for 100 ns.
+		Reset <= '1';
       wait for 100 ns;	
+		
 
-      wait for CLK_period*5;
 		
 		DATA <= "00000000000000000000000000000000";
 		WE <= '0';
-		
+		Reset <= '0';
 		--write output
 		wait for CLK_period*5;
 		
@@ -114,8 +116,9 @@ BEGIN
 		
 		DATA <= "00000000000000000000000000000001";
 		WE <= '0';
-		
 
+		wait for CLK_period*5;
+		Reset <= '1';
       -- insert stimulus here 
 
       wait;

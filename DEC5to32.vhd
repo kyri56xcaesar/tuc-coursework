@@ -30,8 +30,8 @@ use IEEE.STD_LOGIC_1164.ALL;
 --use UNISIM.VComponents.all;
 
 entity DEC5to32 is
-port( Awr : in  std_logic_vector(4 downto 0);
-      Dout: out std_logic_vector(31 downto 0));
+port( Awr : in  std_logic_vector(4 downto 0);  --input signal
+      Dout: out std_logic_vector(31 downto 0));--output
 
 end DEC5to32;
 
@@ -40,7 +40,7 @@ architecture Behavioral of DEC5to32 is
 signal tmp : STD_LOGIC_VECTOR(31 downto 0);
 
 begin
-
+--select register depending on input signal
    tmp <= "00000000000000000000000000000001" when Awr="00000" else --Lsb=0 instead of '1'(in 32bit number)--R0
           "00000000000000000000000000000010" when Awr="00001" else --R1
 			 "00000000000000000000000000000100" when Awr="00010" else --R2

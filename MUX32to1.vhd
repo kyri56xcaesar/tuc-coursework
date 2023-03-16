@@ -30,7 +30,7 @@ use IEEE.STD_LOGIC_1164.ALL;
 --use UNISIM.VComponents.all;
 
 entity MUX32to1 is
-port(sel   : in  std_logic_vector(4 downto 0);
+port(sel   : in  std_logic_vector(4 downto 0); --input selection signal , select 1 out of 32 inputs
 	  R0    : in  std_logic_vector(31 downto 0);
 	  R1    : in  std_logic_vector(31 downto 0);
 	  R2    : in  std_logic_vector(31 downto 0);
@@ -73,16 +73,16 @@ signal temp : std_logic_vector(31 downto 0);
 
 begin
 
-temp <= R0 when sel = "00000" else
-        R1 when sel = "00001" else
-		  R2 when sel = "00010" else
-		  R3 when sel = "00011" else
-		  R4 when sel = "00100" else
-		  R5 when sel = "00101" else
-		  R6 when sel = "00110" else
-		  R7 when sel = "00111" else
-		  R8 when sel = "01000" else
-		  R9 when sel = "01001" else
+temp <= R0  when sel = "00000" else
+        R1  when sel = "00001" else
+		  R2  when sel = "00010" else
+		  R3  when sel = "00011" else
+		  R4  when sel = "00100" else
+		  R5  when sel = "00101" else
+		  R6  when sel = "00110" else
+		  R7  when sel = "00111" else
+		  R8  when sel = "01000" else
+		  R9  when sel = "01001" else
 		  R10 when sel = "01010" else
 		  R11 when sel = "01011" else
 		  R12 when sel = "01100" else

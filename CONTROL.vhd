@@ -37,6 +37,7 @@ port( Instrin          : in std_logic_vector(31 downto 0);
 		Zero             : in std_logic;
 		Reset            : in std_logic;
 		Clk              : in std_logic;
+		---------------outputs---------------
 		Instrout         : out std_logic_vector(31 downto 0);
 		RF_Wr_Data_sel   : out std_logic;
 		ALU_Bin_sel      : out std_logic;

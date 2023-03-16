@@ -30,11 +30,11 @@ use IEEE.STD_LOGIC_1164.ALL;
 --use UNISIM.VComponents.all;
 
 entity PC is
-    Port ( PC_in : in  STD_LOGIC_VECTOR (31 downto 0);
-           PC_LdEn : in  STD_LOGIC;
-           Clk : in  STD_LOGIC;
-           Reset : in  STD_LOGIC;
-           PC_out : out  STD_LOGIC_VECTOR (31 downto 0));
+    Port ( PC_in   : in  STD_LOGIC_VECTOR (31 downto 0); --input
+           PC_LdEn : in  STD_LOGIC;                      --load enable signal
+           Clk     : in  STD_LOGIC;                      --clock signal
+           Reset   : in  STD_LOGIC;                      --reset signal
+           PC_out  : out STD_LOGIC_VECTOR (31 downto 0));--output
 end PC;
 
 architecture Behavioral of PC is
@@ -47,14 +47,14 @@ process
 
 begin
 
-	wait until (Clk'EVENT and Clk = '1');
+	wait until (Clk'EVENT and Clk = '1');--wait for positive clock edge
 	
-		if Reset = '1' then
+		if Reset = '1' then--if reset is enabled then outpu is zero
 			PC_out <= "00000000000000000000000000000000";
 		else
-			if(PC_LdEn = '1') then
+			if(PC_LdEn = '1') then--if load is enabled then load the new data
 				temp <= PC_in;
-			elsif (PC_LdEn = '0') then
+			elsif (PC_LdEn = '0') then--else hold the previous
 				temp <= PC_out;
 			end if;
 			

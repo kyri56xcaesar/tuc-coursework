@@ -31,8 +31,8 @@ use IEEE.STD_LOGIC_1164.ALL;
 
 entity Incrementor is
 
-port( input  : std_logic_vector(31 downto 0);
-		output : std_logic_vector(31 downto 0)); 
+port( input  : std_logic_vector(31 downto 0); --input(from pc)
+		output : std_logic_vector(31 downto 0));--output
 
 end Incrementor;
 
@@ -40,7 +40,7 @@ architecture Behavioral of Incrementor is
 
 begin
 
-	output <= (input + "00000000000000000000000000000100");
+	output <= (input + "00000000000000000000000000000100");--just add 4 to go to the next instruction
 
 end Behavioral;
 

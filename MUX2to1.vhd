@@ -30,15 +30,16 @@ use IEEE.STD_LOGIC_1164.ALL;
 --use UNISIM.VComponents.all;
 
 entity MUX2to1 is
-    Port ( sel  : in  STD_LOGIC;
-           Din  : in  STD_LOGIC_VECTOR (31 downto 0);
-           Dreg : in  STD_LOGIC_VECTOR (31 downto 0);
-           Dout : out  STD_LOGIC_VECTOR (31 downto 0));
+    Port ( sel  : in  STD_LOGIC;                       --select input
+           Din  : in  STD_LOGIC_VECTOR (31 downto 0);  --input 1
+           Dreg : in  STD_LOGIC_VECTOR (31 downto 0);  --input 2
+           Dout : out  STD_LOGIC_VECTOR (31 downto 0));--output
 end MUX2to1;
 
 architecture Behavioral of MUX2to1 is
 
 begin
+	--select output based on sel signal
    Dout <= Dreg when (sel='0') else
 	        Din;
 

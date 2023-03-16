@@ -31,19 +31,20 @@ use IEEE.STD_LOGIC_1164.ALL;
 
 entity AdderImmediate is
 
-port( Incin 	  : in std_logic_vector(31 downto 0);
-		IMMEDin    : in std_logic_vector(31 downto 0);
-		ADDout     : out std_logic_vector(31 downto 0));
+port( Incin 	  : in std_logic_vector(31 downto 0);--input 1(output from +4adder for pc)
+		IMMEDin    : in std_logic_vector(31 downto 0);--input 2(immediate)
+		ADDout     : out std_logic_vector(31 downto 0)--result of addition
+	  );
 	
 end AdderImmediate;
 
 architecture Behavioral of AdderImmediate is
 
-signal result : std_logic_vector(31 downto 0);
+signal result : std_logic_vector(31 downto 0);--inside temporary signal
 
 begin
 
-result <= (Incin + IMMEDin);
+result <= (Incin + IMMEDin);--just add the 2 inputs
 
 
 ADDout <= result ;

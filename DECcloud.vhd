@@ -30,23 +30,23 @@ use IEEE.STD_LOGIC_1164.ALL;
 --use UNISIM.VComponents.all;
 
 entity DECcloud is
-    Port ( Instr  : in  STD_LOGIC_VECTOR (15 downto 0);
-           Immed : out  STD_LOGIC_VECTOR (31 downto 0);
-			  OPcode : in STD_LOGIC_VECTOR (5 downto 0)
+    Port ( Instr  : in  STD_LOGIC_VECTOR (15 downto 0);--last 16 bits of the whole instruction
+           Immed  : out STD_LOGIC_VECTOR (31 downto 0);--immediate as output after extention
+			  OPcode : in  STD_LOGIC_VECTOR (5 downto 0)  --first 6 bits of the whole instruction
 			 );
 end DECcloud;
 
 architecture Behavioral of DECcloud is
 
-signal temp : STD_LOGIC_VECTOR(31 downto 0);
+signal temp : STD_LOGIC_VECTOR(31 downto 0);--temporary inside signal
 
 begin
 
-temp <= ((31 downto 15 => Instr(15)) & Instr) when ((OPcode = "111000") or (OPcode = "110000") or (OPcode = "000011") or (OPcode = "000111") or  --sign extend
-		  (OPcode = "001111") or (OPcode = "011111")) else 
-		  (Instr & "0000000000000000") when (OPcode = "111001") else --lui
-		  ((31 downto 17 => Instr(15)) & Instr & "00") when ((OPcode = "010000") or (OPcode = "010001") or (OPcode = "111111")) else -- sign extend and sll 2
-		  ("0000000000000000" & Instr);--zero fill --when ((OPcode = "110010") or (OPcode = "110011") ) else
+temp <= ((31 downto 16 => Instr(15)) & Instr) when (OPcode = "111000" or OPcode = "110000" or OPcode = "000011" or OPcode = "000111" or  --sign extend
+		  OPcode = "001111" or OPcode = "011111") else 
+		  (Instr & "0000000000000000") when OPcode = "111001" else --lui
+		  ((31 downto 18 => Instr(15)) & Instr & "00") when (OPcode = "010000" or OPcode = "010001" or OPcode = "111111") else -- sign extend and sll 2
+		  ("0000000000000000" & Instr);--zero fill --when (OPcode = "110010" or OPcode = "110011" ) else
 		  
 		  
 			

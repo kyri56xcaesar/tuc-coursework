@@ -30,15 +30,15 @@ use IEEE.STD_LOGIC_1164.ALL;
 --use UNISIM.VComponents.all;
 
 entity RegisterFile is
-    Port ( Ard1  : in   STD_LOGIC_VECTOR (4 downto 0);
-           Ard2  : in   STD_LOGIC_VECTOR (4 downto 0);
-           Awr   : in   STD_LOGIC_VECTOR (4 downto 0);
-           Din   : in   STD_LOGIC_VECTOR (31 downto 0);
-           WrEn  : in   STD_LOGIC;
-           Clk   : in   STD_LOGIC;
-           Dout1 : out  STD_LOGIC_VECTOR (31 downto 0);
-           Dout2 : out  STD_LOGIC_VECTOR (31 downto 0);
-			  Reset : in   STD_LOGIC);
+    Port ( Ard1  : in   STD_LOGIC_VECTOR (4 downto 0); --number of register 1
+           Ard2  : in   STD_LOGIC_VECTOR (4 downto 0); --number of register 2
+           Awr   : in   STD_LOGIC_VECTOR (4 downto 0); --on which register we write
+           Din   : in   STD_LOGIC_VECTOR (31 downto 0);--data in
+           WrEn  : in   STD_LOGIC;							 --write enable signal for registers	
+           Clk   : in   STD_LOGIC;                     --clock signal
+           Dout1 : out  STD_LOGIC_VECTOR (31 downto 0);--output 1
+           Dout2 : out  STD_LOGIC_VECTOR (31 downto 0);--output 2
+			  Reset : in   STD_LOGIC);							 --reset signal
 end RegisterFile;
 
 architecture Structural of RegisterFile is
@@ -125,6 +125,7 @@ begin
 
 --sign_we(0) <= (WrEn and '0');
 
+--write enable signal for registers
 for1:for i in 1 to 31 generate
 
 	sign_we(i) <= (WrEn and sign_decOut(i));

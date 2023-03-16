@@ -31,9 +31,9 @@ use IEEE.STD_LOGIC_1164.ALL;
 
 entity CompareModule is
 
-port( Ard   : in std_logic_vector(4 downto 0);
-      Awr   : in std_logic_vector(4 downto 0);
-		CMout : out std_logic);
+port( Ard   : in std_logic_vector(4 downto 0);--input 1
+      Awr   : in std_logic_vector(4 downto 0);--input 2
+		CMout : out std_logic);                 --output
 		
 		
 end CompareModule;
