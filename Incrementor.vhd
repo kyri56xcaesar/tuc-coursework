@@ -19,6 +19,8 @@
 ----------------------------------------------------------------------------------
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
+use IEEE.STD_LOGIC_SIGNED.ALL;
+use ieee.std_logic_arith.all;
 
 -- Uncomment the following library declaration if using
 -- arithmetic functions with Signed or Unsigned values
@@ -31,8 +33,8 @@ use IEEE.STD_LOGIC_1164.ALL;
 
 entity Incrementor is
 
-port( input  : std_logic_vector(31 downto 0); --input(from pc)
-		output : std_logic_vector(31 downto 0));--output
+port( input  : in std_logic_vector(31 downto 0); --input(from pc)
+		output : out std_logic_vector(31 downto 0));--output
 
 end Incrementor;
 

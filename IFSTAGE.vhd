@@ -51,8 +51,8 @@ end component;
 
 
 component Incrementor is
-port( input  : std_logic_vector(31 downto 0);
-		output : std_logic_vector(31 downto 0)); 
+port( input  : in  std_logic_vector(31 downto 0);
+		output : out std_logic_vector(31 downto 0)); 
 		
 end component;
 
@@ -90,8 +90,8 @@ port map( Incin => inc_out,
 
 MUX : MUX2to1
 port map(  sel  => PC_sel, 
-           Din  => inc_out,
-           Dreg => add_out,
+           Din  => add_out,
+           Dreg => inc_out,
            Dout => mux_out);
 			  
 PC1 : PC
@@ -99,15 +99,18 @@ port map(  PC_in   => mux_out,
            PC_LdEn => PC_LdEn,
            Clk     => Clk,
            Reset   => Reset,
-           PC_out  => pc_out);
+			  PC_out  => pc_out
+			);
 			  
 Inc : Incrementor
 port map( input  => pc_out,
 			 output => inc_out);
-			 
+
+		 
+		 
 mem: IMEM 
-port map( ADDRA => pc_out(12 downto 2),
-		CLKA  => Clk, 
+port map( ADDRA => pc_out(11 downto 2),
+	   CLKA  => Clk, 
 		DOUTA => Instr);
 
 end Behavioral;

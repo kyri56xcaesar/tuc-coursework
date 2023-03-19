@@ -2,9 +2,9 @@
 -- Company: 
 -- Engineer: 
 -- 
--- Create Date:    14:45:03 03/09/2023 
+-- Create Date:    15:10:30 03/18/2023 
 -- Design Name: 
--- Module Name:    AdderImmediate - Behavioral 
+-- Module Name:    MUX5bit2to1 - Behavioral 
 -- Project Name: 
 -- Target Devices: 
 -- Tool versions: 
@@ -19,8 +19,6 @@
 ----------------------------------------------------------------------------------
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
-use IEEE.STD_LOGIC_SIGNED.ALL;
-use ieee.std_logic_arith.all;
 
 -- Uncomment the following library declaration if using
 -- arithmetic functions with Signed or Unsigned values
@@ -31,25 +29,24 @@ use ieee.std_logic_arith.all;
 --library UNISIM;
 --use UNISIM.VComponents.all;
 
-entity AdderImmediate is
+entity MUX5bit2to1 is
+    Port ( Instr1 : in  STD_LOGIC_VECTOR (4 downto 0);
+           Instr2 : in  STD_LOGIC_VECTOR (4 downto 0);
+           sel : in  STD_LOGIC;
+			  muxout : out STD_LOGIC_VECTOR (4 downto 0)
+			 );
+end MUX5bit2to1;
 
-port( Incin 	  : in std_logic_vector(31 downto 0);--input 1(output from +4adder for pc)
-		IMMEDin    : in std_logic_vector(31 downto 0);--input 2(immediate)
-		ADDout     : out std_logic_vector(31 downto 0)--result of addition
-	  );
-	
-end AdderImmediate;
+architecture Behavioral of MUX5bit2to1 is
 
-architecture Behavioral of AdderImmediate is
-
-signal result : std_logic_vector(31 downto 0);--inside temporary signal
+signal temp : std_logic_vector(4 downto 0);
 
 begin
 
-result <= (Incin + IMMEDin);--just add the 2 inputs
+temp <= Instr1 when (sel='0') else
+		  Instr2;
 
 
-ADDout <= result ;
-
+muxout <= temp;
 end Behavioral;
 

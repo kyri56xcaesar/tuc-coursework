@@ -50,12 +50,12 @@ begin
 	wait until (Clk'EVENT and Clk = '1');--wait for positive clock edge
 	
 		if Reset = '1' then--if reset is enabled then outpu is zero
-			PC_out <= "00000000000000000000000000000000";
+			temp <= "00000000000000000000000000000000";
 		else
 			if(PC_LdEn = '1') then--if load is enabled then load the new data
 				temp <= PC_in;
 			elsif (PC_LdEn = '0') then--else hold the previous
-				temp <= PC_out;
+				temp <= temp;
 			end if;
 			
 		end if;

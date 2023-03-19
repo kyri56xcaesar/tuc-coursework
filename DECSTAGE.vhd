@@ -37,6 +37,7 @@ entity DECSTAGE is
 			  RF_WrEn       : in STD_LOGIC;
 			  RF_B_sel : in STD_LOGIC;
 			  Clk :in STD_LOGIC;
+			  Reset : in STD_LOGIC;
            RF_A : out  STD_LOGIC_VECTOR (31 downto 0);
            RF_B : out  STD_LOGIC_VECTOR (31 downto 0);
 			  Immed : out  STD_LOGIC_VECTOR (31 downto 0)
@@ -58,6 +59,14 @@ Port (     sel  : in  STD_LOGIC;
 
 end component;
 
+component MUX5bit2to1 is
+Port (     sel  : in  STD_LOGIC;
+           Instr1  : in  STD_LOGIC_VECTOR (4 downto 0);
+           Instr2 : in  STD_LOGIC_VECTOR (4 downto 0);
+           muxout : out  STD_LOGIC_VECTOR (4 downto 0));
+
+end component;
+
 
 component RegisterFile is
  Port (    Ard1  : in   STD_LOGIC_VECTOR (4 downto 0);
@@ -66,6 +75,7 @@ component RegisterFile is
            Din   : in   STD_LOGIC_VECTOR (31 downto 0);
            WrEn  : in   STD_LOGIC;
            Clk   : in   STD_LOGIC;
+			  Reset : in   STD_LOGIC;	
            Dout1 : out  STD_LOGIC_VECTOR (31 downto 0);
            Dout2 : out  STD_LOGIC_VECTOR (31 downto 0));
 
@@ -86,24 +96,25 @@ MUX1 : MUX2to1
 port map(  sel  => RF_WrData_sel,
            Din  => ALU_out,
            Dreg => MEM_out,
-           Dout => mux_out1);
-
-
-MUX2 : MUX2to1
-port map(  sel  => RF_B_sel,
-           Din  => Instr(15 downto 11),
-           Dreg => Instr(20 downto 16),
            Dout => mux_out2);
+
+
+MUX2 : MUX5bit2to1
+port map(  sel  => RF_B_sel,
+           Instr1  => Instr(15 downto 11),
+           Instr2 => Instr(20 downto 16),
+           muxout => mux_out1);
 
 RF : RegisterFile
 port map(  Ard1  => Instr(25 downto 21),
-           Ard2  => mux_out2,
+           Ard2  => mux_out1,
            Awr   => Instr(20 downto 16),
-           Din   => mux_out1,
+           Din   => mux_out2,
            WrEn  => RF_WrEn,
            Clk   => Clk,
            Dout1 => RF_A,
-           Dout2 => RF_B);
+           Dout2 => RF_B,
+			  Reset => Reset);
 
 
 Cloud : DECcloud
