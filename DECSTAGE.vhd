@@ -81,7 +81,6 @@ component RegisterFile is
 
 end component;
 
---component cloud
 component DECcloud is 
 Port ( Instr  : in  STD_LOGIC_VECTOR (15 downto 0);
        Immed : out  STD_LOGIC_VECTOR (31 downto 0);
