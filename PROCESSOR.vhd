@@ -48,12 +48,11 @@ port( Instrin          : in std_logic_vector(31 downto 0);
 		Clk              : in std_logic;
 		
 		---------------outputs---------------
-		Instrout         : out std_logic_vector(31 downto 0);
 		RF_Wr_Data_sel   : out std_logic;
 		RF_B_sel         : out std_logic;
 		ALU_Bin_sel      : out std_logic;
 		ALU_func         : out std_logic_vector(3 downto 0);
-		MEM_WrEn         : out std_logic;
+		MEM_WrEn         : out std_logic_vector(0 downto 0);
 		PC_sel           : out std_logic;
 		PC_LdEn          : out std_logic;
 		RF_WrEn          : out std_logic
@@ -61,14 +60,15 @@ port( Instrin          : in std_logic_vector(31 downto 0);
 end component;
 
 component DATAPATH is
-port( Instrin        : in std_logic_vector(31 downto 0);
+port( 
 		RF_Wr_Data_sel : in std_logic;
 		RF_B_sel       : in std_logic;
 		ALU_Bin_sel    : in std_logic;
 		ALU_func       : in std_logic_vector(3 downto 0);
-		MEM_WrEn       : in std_logic;
+		MEM_WrEn       : in std_logic_vector(0 downto 0);
 		PC_sel         : in std_logic;
 		PC_LdEn        : in std_logic;
+		RF_WrEn        : in std_logic;
 		Reset          : in std_logic;
 		Clk            : in std_logic;
 		ALU_zero       : out std_logic;
@@ -80,20 +80,21 @@ port( Instrin        : in std_logic_vector(31 downto 0);
 end component;
 
 signal instructionIn , instructionOut : std_logic_vector(31 downto 0);
-signal RF_Wr_Data_sel ,RF_B_sel,ALU_Bin_sel,ALU_func,MEM_WrEn,PC_sel,PC_LdEn,Ovf,Cout,Zero ,RF_WrEn  : std_logic;
+signal RF_Wr_Data_sel ,RF_B_sel,ALU_Bin_sel,PC_sel,PC_LdEn,Ovf,Cout,Zero ,RF_WrEn  : std_logic;
+signal MEM_WrEn : std_logic_vector(0 downto 0);
+signal ALU_func : std_logic_vector(3 downto 0);
 
 
 begin
 
 
-Control : CONTROL
+Cont    : CONTROL
 port map(Instrin          => instructionIn,     
 			Ovf              => Ovf,
 			Cout             => Cout,
 			Zero             => Zero,
 			Reset            => Reset,
 			Clk              => Clk,
-			Instrout         => instructionOut,
 			RF_Wr_Data_sel   => RF_Wr_Data_sel,
 			RF_B_sel         => RF_B_sel,
 			ALU_Bin_sel      => ALU_Bin_sel,
@@ -105,7 +106,7 @@ port map(Instrin          => instructionIn,
 			);
 
 DATA : DATAPATH
-port map(Instrin          => instructionOut,
+port map(
 			RF_Wr_Data_sel   => RF_Wr_Data_sel,
 			RF_B_sel         => RF_B_sel,
 			ALU_Bin_sel      => ALU_Bin_sel,
@@ -113,6 +114,7 @@ port map(Instrin          => instructionOut,
 			MEM_WrEn         => MEM_WrEn,
 			PC_sel           => PC_sel,
 			PC_LdEn          => PC_LdEn,
+			RF_WrEn          => RF_WrEn,
 			Reset            => Reset,
 			Clk              => Clk,
 			ALU_zero         => Zero,

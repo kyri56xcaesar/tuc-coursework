@@ -41,19 +41,20 @@ ARCHITECTURE behavior OF DATAPATH_tb IS
  
     COMPONENT DATAPATH
     PORT(
-         Instrin : IN  std_logic_vector(31 downto 0);
+         
          RF_Wr_Data_sel : IN  std_logic;
          RF_B_sel : IN  std_logic;
          ALU_Bin_sel : IN  std_logic;
          ALU_func : IN  std_logic_vector(3 downto 0);
-         MEM_WrEn : IN  std_logic;
+         MEM_WrEn : IN  std_logic_vector(0 downto 0);
          PC_sel : IN  std_logic;
          PC_LdEn : IN  std_logic;
+			RF_WrEn : IN std_logic;
          Reset : IN  std_logic;
          Clk : IN  std_logic;
-         ALU_zero : OUT  std_logic_vector(31 downto 0);
-         ALU_OVF : OUT  std_logic_vector(31 downto 0);
-         ALU_COUT : OUT  std_logic_vector(31 downto 0);
+         ALU_zero : OUT  std_logic;
+         ALU_OVF : OUT  std_logic;
+         ALU_COUT : OUT  std_logic;
          Instrout : OUT  std_logic_vector(31 downto 0)
         );
     END COMPONENT;
@@ -65,16 +66,17 @@ ARCHITECTURE behavior OF DATAPATH_tb IS
    signal RF_B_sel : std_logic := '0';
    signal ALU_Bin_sel : std_logic := '0';
    signal ALU_func : std_logic_vector(3 downto 0) := (others => '0');
-   signal MEM_WrEn : std_logic := '0';
+   signal MEM_WrEn : std_logic_vector(0 downto 0) := (others => '0');
    signal PC_sel : std_logic := '0';
    signal PC_LdEn : std_logic := '0';
    signal Reset : std_logic := '0';
    signal Clk : std_logic := '0';
+	signal RF_WrEn : std_logic := '0';
 
  	--Outputs
-   signal ALU_zero : std_logic_vector(31 downto 0);
-   signal ALU_OVF : std_logic_vector(31 downto 0);
-   signal ALU_COUT : std_logic_vector(31 downto 0);
+   signal ALU_zero : std_logic;
+   signal ALU_OVF : std_logic;
+   signal ALU_COUT : std_logic;
    signal Instrout : std_logic_vector(31 downto 0);
 
    -- Clock period definitions
@@ -84,7 +86,6 @@ BEGIN
  
 	-- Instantiate the Unit Under Test (UUT)
    uut: DATAPATH PORT MAP (
-          Instrin => Instrin,
           RF_Wr_Data_sel => RF_Wr_Data_sel,
           RF_B_sel => RF_B_sel,
           ALU_Bin_sel => ALU_Bin_sel,
@@ -92,6 +93,7 @@ BEGIN
           MEM_WrEn => MEM_WrEn,
           PC_sel => PC_sel,
           PC_LdEn => PC_LdEn,
+			 RF_WrEn => RF_WrEn,
           Reset => Reset,
           Clk => Clk,
           ALU_zero => ALU_zero,
@@ -115,7 +117,11 @@ BEGIN
    begin		
       -- hold reset state for 100 ns.
 		Reset <= '1';
-      wait for 100 ns;	
+      wait for Clk_period*2;	
+		
+		RF_WrEn        <= '1';
+		
+
 		
 		--                       Rs   Rd   Rt
 		--Instruction  <= "11000000001000110000000000000001"; I-type Addi 
@@ -124,11 +130,12 @@ BEGIN
       RF_B_sel       <= '1';
       ALU_Bin_sel    <= '0';
       ALU_func       <= "0000";
-      MEM_WrEn       <= '0';
+      MEM_WrEn       <= "0";
       PC_sel         <= '0';
       PC_LdEn        <= '1'; 
+		RF_WrEn        <= '1';
 		Reset          <= '0';
-		wait for Clk_period*4;
+		wait for Clk_period*2;
 		
 		
 		--                       Rs   Rd   Rt
@@ -138,11 +145,11 @@ BEGIN
       RF_B_sel       <= '1';
       ALU_Bin_sel    <= '0';
       ALU_func       <= "0000";
-      MEM_WrEn       <= '0';
+      MEM_WrEn       <= "0";
       PC_sel         <= '0';
       PC_LdEn        <= '1'; 
 		Reset          <= '0';
-		wait for Clk_period*4;
+		wait for Clk_period*2;
 
 		
 		--                       Rs   Rd   Rt        function
@@ -152,26 +159,25 @@ BEGIN
       RF_B_sel       <= '0';
       ALU_Bin_sel    <= '1';
       ALU_func       <= "0001";
-      MEM_WrEn       <= '0';
+      MEM_WrEn       <= "0";
       PC_sel         <= '0';
       PC_LdEn        <= '1'; 
 		Reset          <= '0';
-		wait for Clk_period*4;
+		wait for Clk_period*2;
 		
 		
 		--                       Rs   Rd   Rt        function
 		--Instruction  <= "10000000110001100001100000110100"; R-type not
       Instrin        <= "10000000110001100001100000110100";--Rd = !Rs (R6 = !R6) R6 should have value !2 after 
       RF_Wr_Data_sel <= '1';
-      RF_B_sel       <= '1';
+      RF_B_sel       <= '0';
       ALU_Bin_sel    <= '1';
       ALU_func       <= "0100";
-      MEM_WrEn       <= '0';
+      MEM_WrEn       <= "0";
       PC_sel         <= '0';
       PC_LdEn        <= '1'; 
 		Reset          <= '0';
-		wait for Clk_period*4;
-		
+		wait for Clk_period*2;		
 		
 		
 		--                       Rs   Rd  Immed         
@@ -181,12 +187,11 @@ BEGIN
       RF_B_sel       <= '1';
       ALU_Bin_sel    <= '0';
       ALU_func       <= "0000";
-      MEM_WrEn       <= '0';
+      MEM_WrEn       <= "0";
       PC_sel         <= '0';
       PC_LdEn        <= '1'; 
 		Reset          <= '0';
-		wait for Clk_period*4;
-		
+		wait for Clk_period*2;		
 		
 		
 		--                       Rs   Rd   Rt        function
@@ -196,12 +201,11 @@ BEGIN
       RF_B_sel       <= '0';
       ALU_Bin_sel    <= '1';
       ALU_func       <= "0001";
-      MEM_WrEn       <= '0';
+      MEM_WrEn       <= "0";
       PC_sel         <= '0';
       PC_LdEn        <= '1'; 
 		Reset          <= '0';
-		wait for Clk_period*4;
-		
+		wait for Clk_period*2;		
 		
 		
 		--                       Rs   Rd   Rt        function
@@ -211,12 +215,11 @@ BEGIN
       RF_B_sel       <= '0';
       ALU_Bin_sel    <= '1';
       ALU_func       <= "0011";
-      MEM_WrEn       <= '0';
+      MEM_WrEn       <= "0";
       PC_sel         <= '0';
       PC_LdEn        <= '1'; 
 		Reset          <= '0';
-		wait for Clk_period*4;
-		
+		wait for Clk_period*2;		
 		
 		
 		--                       Rs   Rd   Rt        function
@@ -226,12 +229,11 @@ BEGIN
       RF_B_sel       <= '0';
       ALU_Bin_sel    <= '1';
       ALU_func       <= "1000";
-      MEM_WrEn       <= '0';
+      MEM_WrEn       <= "0";
       PC_sel         <= '0';
       PC_LdEn        <= '1'; 
 		Reset          <= '0';
-		wait for Clk_period*4;
-		
+		wait for Clk_period*2;		
 		
 		
 		--                       Rs   Rd   Rt        function
@@ -241,12 +243,11 @@ BEGIN
       RF_B_sel       <= '0';
       ALU_Bin_sel    <= '1';
       ALU_func       <= "1001";
-      MEM_WrEn       <= '0';
+      MEM_WrEn       <= "0";
       PC_sel         <= '0';
       PC_LdEn        <= '1'; 
 		Reset          <= '0';
-		wait for Clk_period*4;
-		
+		wait for Clk_period*2;		
 		--                       Rs   Rd   Rt        function
 		--Instruction  <= "10000001000100000011100000111010"; R-type sra
       Instrin        <= "10000001000100000011100000111010";--Rd = Rs >> 1 (R16 = R8 >> 1) R16 should have value +2^32 value after
@@ -254,12 +255,11 @@ BEGIN
       RF_B_sel       <= '1';
       ALU_Bin_sel    <= '1';
       ALU_func       <= "1000";
-      MEM_WrEn       <= '0';
+      MEM_WrEn       <= "0";
       PC_sel         <= '0';
       PC_LdEn        <= '1'; 
 		Reset          <= '0';
-		wait for Clk_period*4;
-		
+		wait for Clk_period*2;		
 		--                       Rs   Rd   Rt        function
 		--Instruction  <= "10000001000100000011100000111100"; R-type rol
       Instrin        <= "10000001000100000011100000111100";--Rd = Rs >> 1 (R16 = R8 rol 1) R16
@@ -267,11 +267,11 @@ BEGIN
       RF_B_sel       <= '1';
       ALU_Bin_sel    <= '1';
       ALU_func       <= "1100";
-      MEM_WrEn       <= '0';
+      MEM_WrEn       <= "0";
       PC_sel         <= '0';
       PC_LdEn        <= '1'; 
 		Reset          <= '0';
-		wait for Clk_period*4;
+		wait for Clk_period*2;
 		
 		--                       Rs   Rd   immed        
 		--Instruction  <= "11100001001100010000000000001000"; I-type li
@@ -280,11 +280,11 @@ BEGIN
       RF_B_sel       <= '1';
       ALU_Bin_sel    <= '0';
       ALU_func       <= "0010";
-      MEM_WrEn       <= '0';
+      MEM_WrEn       <= "0";
       PC_sel         <= '0';
       PC_LdEn        <= '1'; 
 		Reset          <= '0';
-		wait for Clk_period*4;
+		wait for Clk_period*2;
 		
 		--                       Rs   Rd   immed        
 		--Instruction  <= "11100101001100010000000000011001"; I-type lui
@@ -293,12 +293,12 @@ BEGIN
       RF_B_sel       <= '1';
       ALU_Bin_sel    <= '0';
       ALU_func       <= "0011";
-      MEM_WrEn       <= '0';
+      MEM_WrEn       <= "0";
       PC_sel         <= '0';
       PC_LdEn        <= '1'; 
 		Reset          <= '0';
-		wait for Clk_period*4;
-
+		wait for Clk_period*2;
+		
 
 		--                       Rs   Rd   Rt        function
 		--Instruction  <= "11001010001100110011100000111010"; I-type andi
@@ -307,12 +307,12 @@ BEGIN
       RF_B_sel       <= '1';
       ALU_Bin_sel    <= '0';
       ALU_func       <= "0010";
-      MEM_WrEn       <= '0';
+      MEM_WrEn       <= "0";
       PC_sel         <= '0';
       PC_LdEn        <= '1'; 
 		Reset          <= '0';
-		wait for Clk_period*4;
-
+		wait for Clk_period*2;
+		
 
 		--                       Rs   Rd   Rt        function
 		--Instruction  <= "11001110001101000011100000111010"; I-type ori
@@ -321,12 +321,12 @@ BEGIN
       RF_B_sel       <= '1';
       ALU_Bin_sel    <= '0';
       ALU_func       <= "0011";
-      MEM_WrEn       <= '0';
+      MEM_WrEn       <= "0";
       PC_sel         <= '0';
       PC_LdEn        <= '1'; 
 		Reset          <= '0';
-		wait for Clk_period*4;
-
+		wait for Clk_period*2;
+		
 
 		--                       Rs   Rd   Rt        function
 		--Instruction  <= "01000010100101000011100000111010"; beq
@@ -335,11 +335,12 @@ BEGIN
       RF_B_sel       <= '1';
       ALU_Bin_sel    <= '0';
       ALU_func       <= "0001";
-      MEM_WrEn       <= '0';
+      MEM_WrEn       <= "0";
       PC_sel         <= '0';
-      PC_LdEn        <= '1'; 
+      PC_LdEn        <= '1';
+		RF_WrEn        <= '0';
 		Reset          <= '0';
-		wait for Clk_period*4;		
+		wait for Clk_period*2;
 		
 		
 		--                       Rs   Rd   Rt        function
@@ -349,11 +350,11 @@ BEGIN
       RF_B_sel       <= '1';
       ALU_Bin_sel    <= '0';
       ALU_func       <= "0001";
-      MEM_WrEn       <= '0';
+      MEM_WrEn       <= "0";
       PC_sel         <= '0';
       PC_LdEn        <= '1'; 
 		Reset          <= '0';
-		wait for Clk_period*4;
+		wait for Clk_period*2;
 		
 		
 		
@@ -364,11 +365,11 @@ BEGIN
       RF_B_sel       <= '1';
       ALU_Bin_sel    <= '0';
       ALU_func       <= "0000";
-      MEM_WrEn       <= '1';
+      MEM_WrEn       <= "1";
       PC_sel         <= '0';
       PC_LdEn        <= '1'; 
 		Reset          <= '0';
-		wait for Clk_period*4;
+		wait for Clk_period*2;
 		
 		--                       Rs   Rd   immed        
 		--Instruction  <= "00111100000111110000000000000000"; lw
@@ -377,39 +378,41 @@ BEGIN
       RF_B_sel       <= '1';
       ALU_Bin_sel    <= '0';
       ALU_func       <= "0000";
-      MEM_WrEn       <= '0';
+      MEM_WrEn       <= "0";
       PC_sel         <= '0';
       PC_LdEn        <= '1'; 
+		RF_WrEn        <= '1';
 		Reset          <= '0';
-		wait for Clk_period*4;
+		wait for Clk_period*2;
+		
 		
 		--                       Rs   Rd   Rt        function
-		--Instruction  <= "01111100000000110000000000000001"; sb
-      Instrin        <= "01111100000000110000000000000000";
-      RF_Wr_Data_sel <= ;
-      RF_B_sel       <= ;
-      ALU_Bin_sel    <= ;
-      ALU_func       <= ;
-      MEM_WrEn       <= ;
-      PC_Immed       <= ;
-      PC_sel         <= ;
-      PC_LdEn        <= ; 
-		Reset          <= ;
-		wait for Clk_period*4;
+      --Instruction  <= "00011100000000110000000000000001"; sb
+      Instrin        <= "01111100000000110000000000000001";
+      RF_Wr_Data_sel <= '1';
+      RF_B_sel       <= '1';
+      ALU_Bin_sel    <= '0';
+      ALU_func       <= "0000";
+      MEM_WrEn       <= "1";
+      PC_sel         <= '0';
+      PC_LdEn        <= '0';
+      RF_WrEn		   <= '0';
+      Reset          <= '0';
+		wait for Clk_period*2;
 		
 		--                       Rs   Rd   immed        
-		--Instruction  <= "00111100000111100000000000000001"; lb
-      Instrin        <= "00111100000111110000000000000000";
-      RF_Wr_Data_sel <= ;
-      RF_B_sel       <= ;
-      ALU_Bin_sel    <= ;
-      ALU_func       <= ;
-      MEM_WrEn       <= ;
-      PC_Immed       <= ;
-      PC_sel         <= ;
-      PC_LdEn        <= ; 
-		Reset          <= ;
-		wait for Clk_period*4;
+      --Instruction  <= "00111100000111110000000000000001"; lb
+      Instrin        <= "00111100000111110000000000000001";
+      RF_Wr_Data_sel <= '1';
+      RF_B_sel       <= '1';
+      ALU_Bin_sel    <= '0';
+      ALU_func       <= "0000";
+      MEM_WrEn       <= "0";
+      PC_sel         <= '0';
+      PC_LdEn        <= '0'; 
+		RF_WrEn        <= '1';
+      Reset          <= '0';
+		wait for Clk_period*2;
 		
 		--                       Rs   Rd   Rt        function
 		--Instruction  <= "10000000110010000011100000110011"; R-type and
@@ -418,11 +421,11 @@ BEGIN
       RF_B_sel       <= '0';
       ALU_Bin_sel    <= '1';
       ALU_func       <= "0010";
-      MEM_WrEn       <= '0';
+      MEM_WrEn       <= "0";
       PC_sel         <= '0';
       PC_LdEn        <= '1'; 
 		Reset          <= '0';
-		wait for Clk_period*4;
+		wait for Clk_period*2;
 		
 
       wait;

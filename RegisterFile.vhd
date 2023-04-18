@@ -121,6 +121,11 @@ signal sign_Reg: ar2d;--2 dim 32x32 array
 
 signal comp1,comp2 :STD_LOGIC;
 
+signal tempout1 : std_logic_vector(31 downto 0);
+signal tempout2 : std_logic_vector(31 downto 0);
+
+
+
 begin
 
 --sign_we(0) <= (WrEn and '0');
@@ -138,11 +143,11 @@ DEC1: DEC5to32
 				  );
 
 Reg0: Reg
-  Port map ( DATA=>"00000000000000000000000000000000",
+  Port map ( DATA=>Din,
              CLK=>CLK,
-				 WE=>'1',
+				 WE=>'0',
 				 Dout=>sign_Reg(0),
-				 Reset => Reset
+				 Reset => '1'
 				 );
 --GENERATE 1-31 Registers----
 for2:for i in 1 to 31 generate
@@ -256,5 +261,7 @@ MUX4: MUX2to1
 				  Dreg=>sign_MUX2,
 				  Dout=>Dout2
 				 );
+
+
 
 end Structural;

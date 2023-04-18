@@ -126,7 +126,7 @@ BEGIN
 		Reset <= '0';
 		
 		
-      wait for Clk_period*10;
+      wait for Clk_period;
 		
 		Instr <= "10000000000001000001001010110000";
 		RF_WrEn <='1';
@@ -137,7 +137,7 @@ BEGIN
 		Reset <= '0';
 		
 		
-      wait for Clk_period*10;
+      wait for Clk_period;
 		
 		
 		Instr <= "10000000100010000001001010110000";
@@ -149,7 +149,7 @@ BEGIN
 		Reset <= '0';
 		
 		
-      wait for Clk_period*10;
+      wait for Clk_period;
        
 		
       wait;

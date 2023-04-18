@@ -40,8 +40,12 @@ end CompareModule;
 
 architecture Behavioral of CompareModule is
 
+signal temp : std_logic;
+
 begin
 
 CMout<= '1' when (Ard=Awr) else '0';
+
+
 
 end Behavioral;

@@ -43,12 +43,13 @@ signal temp : STD_LOGIC_VECTOR(31 downto 0);--temporary inside signal
 begin
 
 temp <= ((31 downto 16 => Instr(15)) & Instr) when (OPcode = "111000" or OPcode = "110000" or OPcode = "000011" or OPcode = "000111" or  --sign extend
-		  OPcode = "001111" or OPcode = "011111") else 
-		  (Instr & "0000000000000000") when OPcode = "111001" else --lui
-		  ((31 downto 18 => Instr(15)) & Instr & "00") when (OPcode = "010000" or OPcode = "010001" or OPcode = "111111") else -- sign extend and sll 2
-		  ("0000000000000000" & Instr);--zero fill --when (OPcode = "110010" or OPcode = "110011" ) else
+	    OPcode = "001111" or OPcode = "011111") else 
+		 (Instr & "0000000000000000") when OPcode = "111001" else --lui
+	    ((31 downto 18 => Instr(15)) & Instr & "00") when (OPcode = "010000" or OPcode = "010001" or OPcode = "111111") else -- sign extend and sll 2
+		 ("0000000000000000" & Instr);--zero fill --when (OPcode = "110010" or OPcode = "110011" ) else
 		  
 		  
+
 			
 Immed <= temp;
 

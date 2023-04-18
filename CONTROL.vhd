@@ -39,12 +39,11 @@ port( Instrin          : in std_logic_vector(31 downto 0);
 		Clk              : in std_logic;
 		
 		---------------outputs---------------
-		Instrout         : out std_logic_vector(31 downto 0);
 		RF_Wr_Data_sel   : out std_logic;
 		RF_B_sel         : out std_logic;
 		ALU_Bin_sel      : out std_logic;
 		ALU_func         : out std_logic_vector(3 downto 0);
-		MEM_WrEn         : out std_logic;
+		Mem_WrEn         : out std_logic_vector(0 downto 0);
 		PC_sel           : out std_logic;
 		PC_LdEn          : out std_logic;
 		RF_WrEn          : out std_logic
@@ -68,11 +67,16 @@ begin
 
 case curstate is 
 	when resetstate =>
-			nextstate <= checkstate;
-			Reset <= '0';
+			PC_sel <= '0';
 			PC_LdEn <= '0';
-			MEM_WrEn <= '0';
+			Mem_WrEn <= "0";
 			RF_WrEn  <= '0';
+			RF_Wr_Data_sel <= '0';
+			RF_B_sel <= '0';
+			ALU_Bin_sel <='0';
+			ALU_func <= "0000";
+			nextstate <= checkstate;
+
 	
 	when checkstate =>
 			if( Instrin = "00000000000000000000000000000000") then
@@ -82,10 +86,10 @@ case curstate is
 					PC_sel  <= '0';--pc+4(output of incrementor)
 					PC_LdEn <= '1';--get the next instruction
 					RF_WrEn <='1'; -- we have to write in the registers
-					RF_B_sel <= '1'; -- rt register 
-					RF_WrData_sel <= '1'; -- all the data comes from ALU
+					RF_B_sel <= '0'; -- rt register 
+					RF_Wr_Data_sel <= '1'; -- all the data comes from ALU
 					ALU_Bin_sel <='1'; -- we need always the RF_B when we are in ALU
-					Mem_WrEn <= '0'; -- don't care about memory here
+					Mem_WrEn <= "0"; -- don't care about memory here
 -----------------------------R type-----------------------------
 					if(Instrin(5 downto 0) = "110000") then -- check the func
 							ALU_func <= "0000"; -- add case
@@ -116,59 +120,59 @@ case curstate is
 					end if;
 						nextstate <= checkstate;
 -----------------------------I type-----------------------------
-		elsif Instr(31 downto 26) = "111000" or Instr(31 downto 26) = "111001" then -- li and lui
+		elsif Instrin(31 downto 26) = "111000" or Instrin(31 downto 26) = "111001" then -- li and lui
 						PC_sel  <= '0';--pc+4(output of incrementor)
 						PC_LdEn <= '1';--get the next instruction
 						RF_WrEn <='1'; -- we have to write in the registers
 						RF_B_sel <= '1'; -- rt register 
-						RF_WrData_sel <= '1'; -- all the data comes from ALU
+						RF_Wr_Data_sel <= '1'; -- all the data comes from ALU
 						ALU_Bin_sel <='0'; -- we need always the RF_B when we are in ALU
-						Mem_WrEn <= '0'; -- don't care about memory here
+						Mem_WrEn <= "0"; -- don't care about memory here
 						ALU_func <= "0000"; --add 
-		elsif Instr(31 downto 26) = "110000" then -- addi
+		elsif Instrin(31 downto 26) = "110000" then -- addi
 						PC_sel  <= '0';--pc+4(output of incrementor)
 						PC_LdEn <= '1';--get the next instruction
 						RF_WrEn <='1'; -- we have to write in the registers
-						RF_B_sel <= '0'; -- rt register 
-						RF_WrData_sel <= '1'; -- all the data comes from ALU
+						RF_B_sel <= '1'; -- rd register
+						RF_Wr_Data_sel <= '1'; -- all the data comes from ALU
 						ALU_Bin_sel <='0'; -- we need always the RF_B when we are in ALU
-						Mem_WrEn <= '0'; -- don't care about memory here
+						Mem_WrEn <= "0"; -- don't care about memory here
 						ALU_func <= "0000"; --add 
-		elsif Instr(31 downto 26) = "110010" then -- andi
+		elsif Instrin(31 downto 26) = "110010" then -- andi
 						PC_sel  <= '0';--pc+4(output of incrementor)
 						PC_LdEn <= '1';--get the next instruction
 						RF_WrEn <='1'; -- we have to write in the registers
-						RF_B_sel <= '0'; -- rt register 
-						RF_WrData_sel <= '1'; -- all the data comes from ALU
+						RF_B_sel <= '1'; -- rt register 
+						RF_Wr_Data_sel <= '1'; -- all the data comes from ALU
 						ALU_Bin_sel <='0'; -- we need always the RF_B when we are in ALU
-						Mem_WrEn <= '0'; -- don't care about memory here
+						Mem_WrEn <= "0"; -- don't care about memory here
 						ALU_func <= "0010"; --and
-		elsif Instr(31 downto 26) = "110011" then -- addi
+		elsif Instrin(31 downto 26) = "110011" then -- ori
 						PC_sel  <= '0';--pc+4(output of incrementor)
 						PC_LdEn <= '1';--get the next instruction
 						RF_WrEn <='1'; -- we have to write in the registers
-						RF_B_sel <= '0'; -- rt register 
-						RF_WrData_sel <= '1'; -- all the data comes from ALU
+						RF_B_sel <= '1'; -- rt register 
+						RF_Wr_Data_sel <= '1'; -- all the data comes from ALU
 						ALU_Bin_sel <='0'; -- we need always the RF_B when we are in ALU
-						Mem_WrEn <= '0'; -- don't care about memory here
+						Mem_WrEn <= "0"; -- don't care about memory here
 						ALU_func <= "0011"; --ori
 ----------------------------j type----------------------------
-		elsif Instr(31 downto 26) = "111111" then -- branch
+		elsif Instrin(31 downto 26) = "111111" then -- branch
 						PC_sel  <= '1';--pc+4 + immediate
 						PC_LdEn <= '1';--get the next instruction
-						RF_WrEn <='1'; -- we have to write in the registers
+						RF_WrEn <='0'; -- we have to write in the registers
 						RF_B_sel <= '1'; -- rt register 
-						RF_WrData_sel <= '1'; -- all the data comes from ALU
+						RF_Wr_Data_sel <= '1'; -- all the data comes from ALU
 						ALU_Bin_sel <='0'; -- we need always the RF_B when we are in ALU
-						Mem_WrEn <= '0'; -- don't care about memory here
+						Mem_WrEn <= "0"; -- don't care about memory here
 						ALU_func <= "0000"; 
-		elsif Instr(31 downto 26) = "010000" then -- beq
+		elsif Instrin(31 downto 26) = "010000" then -- beq
 						PC_LdEn <= '1';--get the next instruction
-						RF_WrEn <='1'; -- we have to write in the registers
+						RF_WrEn <='0'; -- we have to write in the registers
 						RF_B_sel <= '1'; -- rt register 
-						RF_WrData_sel <= '1'; -- all the data comes from ALU
+						RF_Wr_Data_sel <= '1'; -- all the data comes from ALU
 						ALU_Bin_sel <='0'; -- we need always the RF_B when we are in ALU
-						Mem_WrEn <= '0'; -- don't care about memory here
+						Mem_WrEn <= "0"; -- don't care about memory here
 						ALU_func <= "0001";
 						if Zero = '0' then
 							PC_sel <= '1';
@@ -176,13 +180,13 @@ case curstate is
 							PC_sel <= '0';
 						end if;
 						
-		elsif Instr(31 downto 26) = "010001" then -- bne
+		elsif Instrin(31 downto 26) = "010001" then -- bne
 						PC_LdEn <= '1';--get the next instruction
-						RF_WrEn <='1'; -- we have to write in the registers
+						RF_WrEn <='0'; -- we have to write in the registers
 						RF_B_sel <= '1'; -- rt register 
-						RF_WrData_sel <= '1'; -- all the data comes from ALU
+						RF_Wr_Data_sel <= '1'; -- all the data comes from ALU
 						ALU_Bin_sel <='0'; -- we need always the RF_B when we are in ALU
-						Mem_WrEn <= '0'; -- don't care about memory here
+						Mem_WrEn <= "0"; -- don't care about memory here
 						ALU_func <= "0001";
 						if Zero = '0' then
 							PC_sel <= '0';
@@ -190,44 +194,44 @@ case curstate is
 							PC_sel <= '1';
 						end if;
 ----------------------------I type(load and store)----------------------------
-      elsif Instr(31 downto 26) = "000011" then -- lb
+      elsif Instrin(31 downto 26) = "000011" then -- lb
 						PC_sel  <= '0';--pc+4 
 						PC_LdEn <= '1';--get the next instruction
 						RF_WrEn <='1'; -- we have to write in the registers
 						RF_B_sel <= '1'; -- rt register 
-						RF_WrData_sel <= '0'; -- all the data comes from memory
+						RF_Wr_Data_sel <= '0'; -- all the data comes from memory
 						ALU_Bin_sel <='0'; -- we need always the RF_B when we are in ALU
-						Mem_WrEn <= '0'; -- don't care about memory here
+						Mem_WrEn <= "0"; -- don't care about memory here
 						ALU_func <= "0000";--add
 						
-		elsif Instr(31 downto 26) = "001111" then -- lw
+		elsif Instrin(31 downto 26) = "001111" then -- lw
 						PC_sel  <= '0';--pc+4 
 						PC_LdEn <= '1';--get the next instruction
 						RF_WrEn <='1'; -- we have to write in the registers
 						RF_B_sel <= '1'; -- rt 
-						RF_WrData_sel <= '0'; -- all the data comes from memory
+						RF_Wr_Data_sel <= '0'; -- all the data comes from memory
 						ALU_Bin_sel <='0'; -- we need always the RF_B when we are in ALU
-						Mem_WrEn <= '0'; -- don't care about memory here
+						Mem_WrEn <= "0"; -- don't care about memory here
 						ALU_func <= "0000";--add
 						
-		elsif Instr(31 downto 26) = "000111" then -- sb
+		elsif Instrin(31 downto 26) = "000111" then -- sb
 						PC_sel  <= '0';--pc+4 
 						PC_LdEn <= '1';--get the next instruction
 						RF_WrEn <='0'; -- we have to write in the registers
 						RF_B_sel <= '1'; -- rt 
-						RF_WrData_sel <= '0'; -- all the data comes from memory
+						RF_Wr_Data_sel <= '0'; -- all the data comes from memory
 						ALU_Bin_sel <='0'; -- we need always the RF_B when we are in ALU
-						Mem_WrEn <= '1'; -- don't care about memory here
+						Mem_WrEn <= "1"; -- don't care about memory here
 						ALU_func <= "0000";--add
 						
-		elsif Instr(31 downto 26) = "011111" then -- sw
+		elsif Instrin(31 downto 26) = "011111" then -- sw
 						PC_sel  <= '0';--pc+4 
 						PC_LdEn <= '1';--get the next instruction
 						RF_WrEn <='0'; -- we have to write in the registers
-						RF_B_sel <= '1'; -- rt 
-						RF_WrData_sel <= '0'; -- all the data comes from memory
+						RF_B_sel <= '0'; -- rt 
+						RF_Wr_Data_sel <= '0'; -- all the data comes from memory
 						ALU_Bin_sel <='0'; -- we need always the RF_B when we are in ALU
-						Mem_WrEn <= '1'; -- don't care about memory here
+						Mem_WrEn <= "1"; -- don't care about memory here
 						ALU_func <= "0000";--add
 						
 					else

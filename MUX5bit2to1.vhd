@@ -42,11 +42,24 @@ architecture Behavioral of MUX5bit2to1 is
 signal temp : std_logic_vector(4 downto 0);
 
 begin
+--
+--process(Instr1 , Instr2 , sel)
+--
+--begin
+--
+--
+--if sel = '0' then
+--	temp <= Instr1;
+--else	
+--	temp <= Instr2;
+--end if;
+--
+--end process;
+--
+--muxout <= temp ;
 
-temp <= Instr1 when (sel='0') else
+muxout <= Instr1 when sel = '0' else 
 		  Instr2;
 
-
-muxout <= temp;
 end Behavioral;
 

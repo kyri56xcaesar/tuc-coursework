@@ -53,7 +53,7 @@ ARCHITECTURE behavior OF RegisterFile_tb IS
 
     END COMPONENT;
     
-
+ 
    --Inputs
    signal Ard1 : std_logic_vector(4 downto 0) := (others => '0');
    signal Ard2 : std_logic_vector(4 downto 0) := (others => '0');

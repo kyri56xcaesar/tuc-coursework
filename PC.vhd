@@ -43,7 +43,7 @@ signal temp : std_logic_vector(31 downto 0);
 
 begin
 
-process 
+process
 
 begin
 
@@ -54,8 +54,8 @@ begin
 		else
 			if(PC_LdEn = '1') then--if load is enabled then load the new data
 				temp <= PC_in;
-			elsif (PC_LdEn = '0') then--else hold the previous
-				temp <= temp;
+--			elsif (PC_LdEn = '0') then--else hold the previous
+--				temp <= temp;
 			end if;
 			
 		end if;

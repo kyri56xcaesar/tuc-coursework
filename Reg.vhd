@@ -43,7 +43,7 @@ signal temp : STD_LOGIC_VECTOR (31 downto 0);--temporary signal
 
 begin
 
-process 
+process
 
 begin
 	wait until (CLK'EVENT and CLK='1');--wait for positive edge of clock

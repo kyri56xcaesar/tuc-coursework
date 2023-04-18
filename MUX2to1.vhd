@@ -38,10 +38,16 @@ end MUX2to1;
 
 architecture Behavioral of MUX2to1 is
 
+signal temp : std_logic_vector(31 downto 0);
+
 begin
+
+
+
 	--select output based on sel signal
-   Dout <= Dreg when (sel='0') else
+   Dout <= Dreg when sel='0' else
 	        Din;
+
 
 end Behavioral;
 
