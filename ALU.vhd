@@ -24,6 +24,7 @@ use IEEE.STD_LOGIC_ARITH.all;
 use IEEE.STD_LOGIC_SIGNED.ALL;
 
 
+
 -- Uncomment the following library declaration if using
 -- arithmetic functions with Signed or Unsigned values
 --use IEEE.NUMERIC_STD.ALL;
@@ -45,6 +46,7 @@ end ALU;
 
 architecture Behavioral of ALU is
 
+		
 signal result : STD_LOGIC_VECTOR (31 downto 0);
 signal sameSign : STD_LOGIC;
 signal dummyB : STD_LOGIC_VECTOR (31 downto 0);
@@ -67,7 +69,7 @@ result <= (A + B)                  when Op="0000" else--add
 		
 AluOut <= result;
 
-Zero <= '1' when result = x"0000_0000" else--if result is all zeros
+Zero <= '1' when result = "00000000000000000000000000000000" else--if result is all zeros
 		 '0';
   
   --if we have sub we have to adjust B for overflow and carry out check
@@ -95,7 +97,5 @@ Ovf <= tempOvf when (Op="0000") else
 Cout <= tempCout when (Op="0000") else
 		  tempCout when (Op="0001") else
 		  '0';
-
-
-
-end Behavioral;
+		
+end Behavioral; 
