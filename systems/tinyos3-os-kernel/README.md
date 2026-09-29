@@ -1,56 +1,38 @@
+# tinyOS3 — OS Kernel Project
 
-# TinyOS v.3
+Operating Systems course project (TUC, winter 2021–22). Starting from **tinyOS3**, a small
+educational OS running on a simulated multicore machine, I implemented core kernel features
+inside the provided code.
 
-TinyOS is a very small operating system, built on top of a simple-minded virtual machine, whose purpose is
-purely educational. It is not related in any way to the well-known operating system for wireless sensors,
-but since it was first conceived in 2003, there was a name collision that I have not yet resolved.
-This code (in its long history) has been used for many years to teach the Operating Systems course
-at the Technical University of Crete.
+> Not to be confused with the TinyOS for wireless sensors — see
+> [`../tinyos-wsn-routing`](../tinyos-wsn-routing) for that one.
 
-In its current incarnation, tinyos supports a multicore preemptive scheduler, serial terminal devices, and a
-unix like process model. It does not support (yet) memory management, block devices, or network devices. These
-extensions are planned for the future.
+## What I implemented
 
-## Quick start
+- **Multithreading** (`kernel_threads.c`): processes can run multiple threads —
+  `CreateThread`, `ThreadSelf`, `ThreadJoin`, `ThreadDetach`, `ThreadExit`, managed with
+  per-thread control blocks (PTCBs).
+- **Pipes** (`kernel_pipe.c`): `Pipe()` with a bounded buffer, blocking reads and writes,
+  and separate reader/writer close.
+- **Sockets** (`kernel_socket.c`): local stream sockets on ports — `Socket`, `Listen`,
+  `Accept`, `Connect`, `ShutDown`. Connected sockets talk over a pair of pipes.
 
-After downloading the code, just build it.
-```
-$ make
-```
-If all goes well, the code should build without warnings. Then, you can run your first instance of tinyos,
-a simulation of Dijkstra's Dining Philosophers.
-```
-$ ./mtask 1 0 5 5
-FMIN = 27    FMAX = 37
-*** Booting TinyOS
-[T] .  .  .  .      0 has arrived
-[E] .  .  .  .      0 is eating
-[T] .  .  .  .      0 is thinking
-[E] .  .  .  .      0 is eating
- E [T] .  .  .      1 has arrived
- E [H] .  .  .      1 waits hungry
- E  H [T] .  .      2 has arrived
-< more lines deleted >
+The rest of the kernel (scheduler, processes, devices, the `bios` VM) came with the course.
+
+## Build and run
+
+Linux only; needs GCC with C11 support.
+
+```sh
+make                 # build everything
+./validate_api       # run the API test suite (threads, pipes, sockets)
+./mtask 1 0 5 5      # dining philosophers demo
+./tinyos_shell       # a small shell running on tinyOS
 ```
 
-Then, you are ready to start reading the documentation (you will need `doxygen` to build it)
-```
-make doc
-```
-Point your browser at file  `doc/html/index.html`.  Happy reading!
+`make doc` builds the Doxygen docs into `doc/html/`. The original course README is in
+[`TINYOS3_README.md`](TINYOS3_README.md).
 
+## License
 
-### Build dependencies
-
-Tinyos is developed, and will probably only run on Linux (its bios.c file uses Linux-specific system 
-calls, in particular signal streams). Any recent (last few years) version of Linux should be sufficient.
-
-Working with the code, at the basic level, requires a recent GCC compiler (with support for C11). The
-standard packages `doxygen` and `valgrind` with their dependencies (e.g., `graphviz`) are also needed 
-for anything serious, as well as the GDB debugger.
-
-
-
-# tinyos3-project
-# tinyos3-project
-# tinyos3-myproject
+The course-provided tinyOS3 code is GPL-2.0 (see [`LICENSE`](LICENSE)).
