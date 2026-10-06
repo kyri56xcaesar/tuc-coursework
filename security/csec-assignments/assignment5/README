@@ -1,0 +1,71 @@
+Assignment 5 - Network traffic monitoring with libpcap
+======================================================
+
+Name: Kyriakos Chalvatzis
+AM:   2018030043
+
+Files
+-----
+pcap_ex.c   the monitor
+makefile    build (links -lpcap)
+README      this file
+
+Build & run
+-----------
+  make
+  ./pcap_ex -r test_pcap_5mins.pcap            # read a file, print to terminal
+  ./pcap_ex -i eth0                            # live capture, output to log.txt
+  ./pcap_ex -i eth0 -f "port 8080"             # live capture with a filter
+  ./pcap_ex -r test_pcap_5mins.pcap -f "udp"   # filter an offline read
+
+With -i the output goes to log.txt; with -r it goes to the terminal.
+Stop a live capture with Ctrl-C; the statistics are printed on exit.
+
+Implementation
+--------------
+Packets are decoded by hand:
+  Ethernet (14 bytes) -> IPv4 (struct ip) or IPv6 (struct ip6_hdr) -> TCP/UDP.
+Non-IP and non-TCP/UDP packets are counted but skipped. For each TCP/UDP
+packet the program prints: protocol, source and destination IP, source and
+destination port, the L4 header length, the payload length and the address of
+the payload in memory.
+
+Filtering (manual, no pcap_compile/pcap_setfilter)
+--------------------------------------------------
+The -f expression is parsed by hand and matched per packet. Supported,
+AND-combined:
+  tcp | udp
+  [src|dst] port <n>
+  [src|dst] host <ip>          (IPv4 or IPv6)
+e.g. "udp", "port 443", "tcp dst port 80", "host 192.168.3.131".
+
+Flows and statistics
+--------------------
+A flow is the 5-tuple {src IP, src port, dst IP, dst port, protocol}, kept in a
+hash table with chaining so each packet is O(1). On exit the program prints:
+total/TCP/UDP flows, total/TCP/UDP packets received (including skipped ones in
+the total), and total TCP/UDP bytes (on-wire length).
+
+Retransmissions (questions 11-13)
+---------------------------------
+TCP: yes, we can flag likely retransmissions. Per flow we track the highest
+sequence number seen so far (next_seq). A data segment whose whole range
+(seq .. seq+len) lies at or before next_seq carries only bytes we have already
+seen, so it is marked "[Retransmitted]". This is a heuristic - it works from
+sequence numbers alone, without reassembling the stream.
+
+UDP: no. UDP has no sequence or acknowledgement numbers and no connection
+state, so at the transport layer there is nothing that lets us distinguish a
+retransmission from a new datagram. Any such detection would need
+application-layer information, which this tool does not inspect.
+
+Payload location
+----------------
+libpcap hands each packet to the callback in the same reusable buffer, so the
+printed payload address is the fixed offset of the payload inside that buffer
+(it repeats across packets by design).
+
+Note on IPv6: the transport header is read from the first Next Header field;
+packets whose TCP/UDP header sits behind IPv6 extension headers are treated as
+"other" and skipped. The provided capture is IPv4-only, but the IPv6 path is
+implemented.

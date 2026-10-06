@@ -23,3 +23,6 @@ project/target/
 # VHDL simulation output
 *.ghw
 *.cf
+
+
+*.pdf

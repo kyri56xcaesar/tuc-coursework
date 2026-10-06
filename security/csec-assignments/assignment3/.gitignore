@@ -4,3 +4,8 @@ file_*
 *.txt
 *.out
 *.o
+acmonitor
+test_aclog
+logger.so
+enc_file_logging.log
+*.key
